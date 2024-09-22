@@ -60,9 +60,9 @@ def bisection_method(a: float, b: float, e: int):
     while b - a > 2 * 10 ** (-e):
         c = (a + b) / 2
         if f(a) * f(c) < 0:
-            a = c
-        else:
             b = c
+        else:
+            a = c
         steps += 1
     x = (a + b) / 2
     print_method_info("Методом бисекции", x, steps, b - a, e, xs)
