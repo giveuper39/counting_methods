@@ -1,5 +1,4 @@
 import numpy as np
-from tabulate import tabulate
 
 
 def f(x):
@@ -13,6 +12,7 @@ def get_nodes(a: float, b: float, m: int) -> np.ndarray:
 
 
 def print_table(nodes: np.ndarray, node_values: np.ndarray):
+    from tabulate import tabulate
     x = list(map(float, nodes))
     y = list(map(float, node_values))
     table = (['x'] + x, ['y'] + y)
