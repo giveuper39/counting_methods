@@ -17,7 +17,7 @@ class F:
 
 
 def P(x: float, n: int) -> float:
-    poly = [2.345, 3.21 * x - 1.65, None, 1.75 * x ** 3 + 2 * x - 0.412]
+    poly = [2.345, 3.21 * x - 1.65, 13 * x**2 - 1.65 * x + 5.4, 1.75 * x ** 3 + 2 * x - 0.412]
     return poly[n]
 
 
@@ -27,7 +27,6 @@ def calculate_integral_errors(f, a: float, b: float, m: int, j: float, include: 
     p = f(a) + f(b)
     w = sum(f(z_arr[i]) for i in range(1, m))
     q = sum(f(z_arr[i] + h / 2) for i in range(m))
-
     left_rect = h * (f(a) + w)
     right_rect = h * (w + f(b))
     mid_rect = h * q
@@ -60,7 +59,7 @@ def print_integral_table(table: list[list[str | float]]):
 
 def print_runge_table(table: list[list[str | float]]):
     headers = ("СФК", "J(h)", "J(h / l)", "J", "Абсолютная погрешность", "Относительная погрешность")
-    print(tabulate(table, headers=headers, tablefmt="fancy_grid", floatfmt=(".15f", ".15f", ".15f")))
+    print(tabulate(table, headers=headers, tablefmt="fancy_grid", floatfmt=(".15f", ".15f", ".15f", ".15f")))
 
 
 def precision_check(n: int, a: float, b: float, m: int):
@@ -86,14 +85,15 @@ def main():
     table1 = calculate_integral_errors(f, a, b, m, j)
     print(f"Значения интеграла по СКФ при {m = }:")
     print_integral_table(table1)
-    l = int(input(f"Сейчас мы увеличим значение {m = } в l раз. Введите l (по умолчанию, 10): l = ") or 10)
+    while(l := int(input(f"Сейчас мы увеличим значение {m = } в l раз. Введите l (по умолчанию, 10): l = ") or 10)) == 1:
+        print("Минимальное значение l = 2!")
     table2 = calculate_integral_errors(f, a, b, m * l, j)
-    print(f"Значения интеграла по СКФ при {m = }:")
+    print(f"Значения интеграла по СКФ при m = {m * l}:")
     print_integral_table(table2)
     runge = runge_correction(table1, table2, l, j)
     print("Уточнение по Рунге-Ромбергу:")
     print_runge_table(runge)
-    for n in (0, 1, 3):
+    for n in range(4):
         print(f"Проверка СКФ для многочлена степени {n}:")
         precision_check(n, a, b, m)
 
