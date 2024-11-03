@@ -28,14 +28,14 @@ def calculate_integral_errors(f, a: float, b: float, m: int, j: float, include: 
     w = sum(f(z_arr[i]) for i in range(1, m))
     q = sum(f(z_arr[i] + h / 2) for i in range(m))
 
-    left_rect = h * (a + w)
-    right_rect = h * (w + b)
+    left_rect = h * (f(a) + w)
+    right_rect = h * (w + f(b))
     mid_rect = h * q
     trap = h / 2 * (p + 2 * w)
     simpson = h / 6 * (p + 2 * w + 4 * q)
     formulae = [left_rect, right_rect, mid_rect, trap, simpson]
     f_names = ["ЛП", "ПП", "СП", "Трапеций", "Симпсона"]
-    include_inds = list(map(int, list(include)))
+    include_inds = map(int, list(include))
     res = [[f_names[i], formulae[i], err := abs(formulae[i] - j), err / abs(j)] for i in include_inds]
     return res
 
