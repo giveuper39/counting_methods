@@ -3,6 +3,10 @@ from tabulate import tabulate
 from scipy import integrate
 
 
+# 1) Прямоугольники - m значений, трапеции - m + 1, Симпсона - 2m + 1
+# 2) Нечетная функция на симметричном интервале дает нулевой интеграл
+
+
 class F:
     @staticmethod
     def f(x: float) -> float:
@@ -17,7 +21,7 @@ class F:
 
 
 def P(x: float, n: int) -> float:
-    poly = [2.345, 3.21 * x - 1.65, 13 * x**2 - 1.65 * x + 5.4, 1.75 * x ** 3 + 2 * x - 0.412]
+    poly = [2.345, 3.21 * x - 1.65, 13 * x ** 2 - 1.65 * x + 5.4, 1.75 * x ** 3 + 2 * x - 0.412]
     return poly[n]
 
 
@@ -74,7 +78,6 @@ def precision_check(n: int, a: float, b: float, m: int):
     print_integral_table(calculate_integral_errors(f, a, b, m, j, include))
 
 
-
 def main():
     f = F.f
     print("Приближенное вычисление интеграла по СКФ")
@@ -85,7 +88,9 @@ def main():
     table1 = calculate_integral_errors(f, a, b, m, j)
     print(f"Значения интеграла по СКФ при {m = }:")
     print_integral_table(table1)
-    while(l := int(input(f"Сейчас мы увеличим значение {m = } в l раз. Введите l (по умолчанию, 10): l = ") or 10)) == 1:
+    while (
+            l := int(
+                input(f"Сейчас мы увеличим значение {m = } в l раз. Введите l (по умолчанию, 10): l = ") or 10)) == 1:
         print("Минимальное значение l = 2!")
     table2 = calculate_integral_errors(f, a, b, m * l, j)
     print(f"Значения интеграла по СКФ при m = {m * l}:")
