@@ -86,9 +86,11 @@ def main():
     print_table(x_arr, A, "x", "A")
     appr = approx_integral(N, A, y_arr)
     Q_arr = Q(x_arr, N)
-    q_appr = approx_integral(N, A, Q_arr)
+    print(Q_arr)
+    Q_A = A_list(a, b, N, Q_arr)
+    q_appr = approx_integral(N, Q_A, Q_arr)
     print(f"Значение интеграла для многочлена степени {N - 1}: {q_appr}.\n"
-          f"Погрешность: {q_appr - integrate.quad(lambda x: p(x) * Q(x, N), a, b)[0]}\n")
+          f"Погрешность: {q_appr - integrate.quad(lambda x: Q(x, N), a, b)[0]}\n")
 
     print(f"Приближенное значение интеграла функции phi(x) = |x-0.5|*sin(x) от {a} до {b}: {appr}\n"
           f"Абсолютная погрешность между точным и приближенным значением: {abs(appr - prec)}")

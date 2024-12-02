@@ -25,13 +25,13 @@ def taylor_solution(x: float, x0: float, y0: float, n: int = 5) -> float:
     return y
 
 
-def print_taylor_method(N: int, h: float, x0: float, y0: float, solution: Callable = solution,
+def print_taylor_method(N: int, h: float, x0: float, y0: float, n: int, solution: Callable = solution,
                         taylor_solution: Callable = taylor_solution):
     table = []
     for k in range(-2, N + 1):
         x_k = x0 + k * h
         prec = solution(x_k)
-        taylor = taylor_solution(x_k, x0, y0, N)
+        taylor = taylor_solution(x_k, x0, y0, n)
         err = abs(taylor - prec)
         table.append([k, x_k, prec, taylor, err])
     print(tabulate(table, tablefmt="fancy_grid",
@@ -96,32 +96,32 @@ def main():
     x0 = 0
     y0 = 1
     ans = "y"
+    n = int(input("Введите количество слагаемых в методе Тейлора (по умолчанию, 6): n = ") or 6) - 1
     while ans in ("y", "Y"):
         N = int(input("Введите количество точек для таблицы значений (по умолчанию N = 10): N = ") or 10)
         h = float(input("Введите шаг (по умолчанию h = 0.1): h = ") or 0.1)
-        print_taylor_method(N, h, x0, y0, solution, taylor_solution)
+        print_taylor_method(N, h, x0, y0, n, solution, taylor_solution)
         x_arr = [x0 + k * h for k in range(N + 1)]
 
         runge_arr = runge_kutta(x_arr, y0, N, h)
-        print("Таблица для метода Рунге-Кутты:")
-        print_method_table(x_arr, runge_arr, N)
+        # print("Таблица для метода Рунге-Кутты:")
+        # print_method_table(x_arr, runge_arr, N)
 
         euler_arr = euler_method(x_arr, y0, N, h)
-        print("Таблица для метода Эйлера:")
-        print_method_table(x_arr, euler_arr, N)
+        # print("Таблица для метода Эйлера:")
+        # print_method_table(x_arr, euler_arr, N)
 
         euler1_arr = euler1_method(x_arr, y0, N, h)
-        print("Таблица для метода Эйлера I:")
-        print_method_table(x_arr, euler1_arr, N)
+        # print("Таблица для метода Эйлера I:")
+        # print_method_table(x_arr, euler1_arr, N)
 
         euler2_arr = euler1_method(x_arr, y0, N, h)
-        print("Таблица для метода Эйлера II:")
-        print_method_table(x_arr, euler2_arr, N)
+        # print("Таблица для метода Эйлера II:")
+        # print_method_table(x_arr, euler2_arr, N)
 
-        yn_arr = [taylor_solution(x_arr[N], x0, y0), runge_arr[N], euler_arr[N], euler1_arr[N], euler2_arr[N]]
+        yn_arr = [taylor_solution(x_arr[N], x0, y0, n), runge_arr[N], euler_arr[N], euler1_arr[N], euler2_arr[N]]
         precise = solution(x_arr[N])
         print_yn_errors(yn_arr, precise)
-
 
         ans = input("Хотите поменять значения N и h? (y/N): ") or "N"
 
