@@ -71,7 +71,8 @@ def euler2_method(x_arr: list[float], y0: float, N: int, h: float) -> list[float
 
 def adams_method(x_arr: list[float], y0: float, N: int, h: float, n: int) -> list[float]:
     x0 = x_arr[0]
-    y_arr = taylor_method(x_arr, x0, y0, n)[:5]
+    # y_arr = taylor_method(x_arr, x0, y0, n)[:5]
+    y_arr = [solution(x) for x in x_arr][:5]
     for m in range(4, N + 2):
         y_arr.append(y_arr[m] + 1 / 720 * h * (1901 * f(x_arr[m], y_arr[m])
                                                - 2774 * f(x_arr[m - 1], y_arr[m - 1])
@@ -134,7 +135,7 @@ def main():
         # print("Таблица для метода Эйлера II:")
         # print_method_table(x_arr, euler2_arr, N)
 
-        yn_arr = [taylor_arr[-1], adams_arr[N + 2], runge_arr[N], euler_arr[N], euler1_arr[N], euler2_arr[N]]
+        yn_arr = [taylor_arr[-1], adams_arr[-1], runge_arr[N], euler_arr[N], euler1_arr[N], euler2_arr[N]]
         precise = solution(x_arr[N])
         print_yn_errors(yn_arr, precise)
 
