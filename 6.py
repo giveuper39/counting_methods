@@ -1,9 +1,8 @@
 from collections.abc import Callable
 
 import numpy as np
-from task41 import p, p_integral, approx_integral, m_list, build_matrex, A_list, print_table
+from task41 import p, p_integral, approx_integral, m_list, A_list, print_table
 from scipy import integrate
-from scipy.optimize import bisect
 import math
 
 
@@ -27,11 +26,11 @@ def p2_integral(k: int, a: float, b: float) -> float:
     return integrate.quad(lambda x: x ** k * p2(x), a, b)[0]
 
 
-def polynom_n(x: float | list[float], N: int) -> float | list[float]:
+def polynom_n(x: float, N: int) -> float:
     return 0.175 * x ** (N - 1) - 2.55 * x + 1.125
 
 
-def polynom_2n(x: float | list[float], N: int) -> float | list[float]:
+def polynom_2n(x: float, N: int) -> float:
     return 0.175 * x ** (2 * N - 1) - 2.55 * x + 1.125
 
 
@@ -50,12 +49,11 @@ def simple_solution(weight: Callable[[float], float], weight_integral: Callable[
     print("Моменты весовой функции ИКФ:")
     print_table(range(0, N), m, "i", "m_i")
     A = A_list(a, b, N, x_arr, weight_integral)
-    print("Коэфициенты КФ: ")
+    print("Коэффициенты КФ: ")
     print_table(x_arr, A, "x", "A")
     approx = approx_integral(N, A, y_arr)
     poly_arr = [polynom_n(x, N) for x in x_arr]
-    poly_A = A_list(a, b, N, x_arr, weight_integral)
-    poly_approx = approx_integral(N, poly_A, poly_arr)
+    poly_approx = approx_integral(N, A, poly_arr)
     print(f"Погрешность значения интеграла для многочлена степени N - 1 = {N - 1}: "
           f"{abs(poly_approx - integrate.quad(lambda x: polynom_n(x, N) * weight(x), a, b)[0])}")
 
@@ -64,7 +62,7 @@ def simple_solution(weight: Callable[[float], float], weight_integral: Callable[
 
 
 def p_integral_qf(k: int, a: float, b: float, weight: Callable[[float], float]) -> float:
-    m = 10000
+    m = 100000
     h = (b - a) / m
     z_arr = [a + i * h for i in range(m + 1)]
     func = lambda x: weight(x) * x ** k
@@ -73,7 +71,8 @@ def p_integral_qf(k: int, a: float, b: float, weight: Callable[[float], float]) 
 
 
 def m_list_new(a: float, b: float, N: int, weight: Callable[[float], float]) -> list[float]:
-    return [p_integral_qf(i, a, b, weight) for i in range(2 * N)]
+    return [p_integral_qf(i, a, b, weight) for i in range(2 * N)]  # неточное значение
+    # return [integrate.quad(lambda x: x**i * weight(x), a, b)[0] for i in range(2 * N)]
 
 
 def build_m_matrex(new_m_list: list[float], N: int) -> list[list[float]]:
@@ -113,7 +112,7 @@ def new_solution(weight: Callable[[float], float], a: float, b: float,
     print("Коэффициенты ортогонального многочлена:")
     print_table(range(N), a_list, "i", "a_i")
 
-    x_arr = find_roots(a_list)
+    x_arr = sorted(find_roots(a_list))
     x_mat = build_x_matrex(N, x_arr)
     A = new_A_list(x_mat, m, N)
     print("Коэффициенты КФ:")
@@ -122,7 +121,6 @@ def new_solution(weight: Callable[[float], float], a: float, b: float,
     print("Узлы КФ:")
     print_table(x_arr, y_arr)
     approx = approx_integral(N, A, y_arr)
-
     poly_arr = [polynom_2n(x, N) for x in x_arr]
     poly_approx = approx_integral(N, A, poly_arr)
     print(f"Погрешность значения интеграла для многочлена степени 2N - 1 = {2 * N - 1}: "
