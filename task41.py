@@ -1,3 +1,5 @@
+from typing import Callable
+
 import numpy as np
 from scipy import integrate
 from tabulate import tabulate
@@ -15,8 +17,8 @@ def p(x):
     return abs(x - 0.5)
 
 
-def phi(x):
-    return p(x) * f(x)
+def phi(x, p_func: Callable = p):
+    return p_func(x) * f(x)
 
 
 def p_integral(k, a, b) -> float:
@@ -43,8 +45,8 @@ def print_table(x_arr, y_arr, lab1="x", lab2="y"):
     print(tabulate(table, tablefmt="fancy_grid"))
 
 
-def m_list(a: float, b: float, N: int) -> list[float]:
-    return [p_integral(i, a, b) for i in range(N)]
+def m_list(a: float, b: float, N: int, p_int: Callable[[int, float, float], float] = p_integral) -> list[float]:
+    return [p_int(i, a, b) for i in range(N)]
 
 
 def build_matrex(N: int, x_arr: list[float]) -> list[list[float]]:
@@ -52,9 +54,9 @@ def build_matrex(N: int, x_arr: list[float]) -> list[list[float]]:
     return matrex
 
 
-def A_list(a: float, b: float, N: int, x_arr: list[float]):
+def A_list(a: float, b: float, N: int, x_arr: list[float], p_int: Callable[[int, float, float], float] = p_integral):
     np_mat = np.array(build_matrex(N, x_arr))
-    np_ans = np.array(m_list(a, b, N))
+    np_ans = np.array(m_list(a, b, N, p_int))
     return np.linalg.solve(np_mat, np_ans)
 
 
